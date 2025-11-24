@@ -229,6 +229,9 @@ class _M3UHomeScreenState extends State<M3UHomeScreen> {
       currentIndex: controller.currentIndex,
       onTap: controller.onNavigationTap,
       type: BottomNavigationBarType.fixed,
+      // --- ADD THIS LINE BELOW ---
+      selectedItemColor: Colors.blue, // <--- Change 'Colors.red' to your preferred color
+      // ---------------------------
       items: _buildBottomNavigationItems(context),
     );
   }
