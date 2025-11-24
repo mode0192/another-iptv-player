@@ -104,15 +104,21 @@ class _PlayerWidgetState extends State<PlayerWidget>
 
   @override
   void dispose() {
-    _player.dispose();
-    _audioHandler.setPlayer(null);
-    _audioHandler.stop();
+    // 1. Cancel subscriptions FIRST (Safety)
     videoTrackSubscription.cancel();
     audioTrackSubscription.cancel();
     subtitleTrackSubscription.cancel();
     contentItemIndexChangedSubscription.cancel();
     _connectivitySubscription.cancel();
+
+    // 2. Reset helpers
     _errorHandler.reset();
+    _audioHandler.setPlayer(null);
+    _audioHandler.stop();
+
+    // 3. Dispose player LAST (Safe to die now)
+    _player.dispose();
+
     super.dispose();
   }
 
