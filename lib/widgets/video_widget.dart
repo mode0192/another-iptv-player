@@ -6,10 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 
 Widget getVideo(
-  BuildContext context,
-  VideoController controller,
-  SubtitleViewConfiguration subtitleViewConfiguration,
-) {
+    BuildContext context,
+    VideoController controller,
+    SubtitleViewConfiguration subtitleViewConfiguration,
+    ) {
+
   switch (Theme.of(context).platform) {
     case TargetPlatform.android:
     case TargetPlatform.iOS:

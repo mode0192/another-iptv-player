@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // <-- added for Clipboard
 import 'package:another_iptv_player/services/event_bus.dart';
 import 'package:another_iptv_player/services/player_state.dart';
 import 'package:another_iptv_player/l10n/localization_extension.dart';
@@ -111,6 +112,40 @@ class _VideoSettingsWidgetState extends State<VideoSettingsWidget> {
                 subtitle: selectedSubtitleTrack,
                 onTap: () => _showSubtitleTrackSelection(context),
               ),
+
+              // Copy Stream URL action: compute URL at tap time so it's always fresh
+              ListTile(
+                leading: const Icon(Icons.link, color: Colors.blue),
+                title: const Text('Copy stream URL'),
+                onTap: () async {
+                  final url = PlayerState.currentContent?.url ?? '';
+
+                  if (url.isEmpty) {
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('No stream URL available'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                    return;
+                  }
+
+                  await Clipboard.setData(ClipboardData(text: url));
+
+                  if (!context.mounted) return;
+
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Stream URL copied to clipboard'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                },
+              ),
+              // -----------------------------------
+
               SizedBox(height: 20),
             ],
           ),
@@ -186,22 +221,22 @@ class _VideoSettingsWidgetState extends State<VideoSettingsWidget> {
                     children: videoTracks
                         .map(
                           (track) => ListTile(
-                            title: Text(track.id),
-                            trailing: selectedVideoTrack == track.id
-                                ? Icon(Icons.check, color: Colors.blue)
-                                : null,
-                            onTap: () {
-                              EventBus().emit('video_track_changed', track);
+                        title: Text(track.id),
+                        trailing: selectedVideoTrack == track.id
+                            ? Icon(Icons.check, color: Colors.blue)
+                            : null,
+                        onTap: () {
+                          EventBus().emit('video_track_changed', track);
 
-                              if (mounted) {
-                                setState(() {
-                                  selectedVideoTrack = track.id;
-                                });
-                              }
-                              Navigator.pop(context);
-                            },
-                          ),
-                        )
+                          if (mounted) {
+                            setState(() {
+                              selectedVideoTrack = track.id;
+                            });
+                          }
+                          Navigator.pop(context);
+                        },
+                      ),
+                    )
                         .toList(),
                   ),
                 ),
@@ -266,23 +301,23 @@ class _VideoSettingsWidgetState extends State<VideoSettingsWidget> {
                     children: audioTracks
                         .map(
                           (track) => ListTile(
-                            title: Text(track.language ?? 'NULL'),
-                            trailing:
-                                selectedAudioTrack == (track.language ?? 'NULL')
-                                ? Icon(Icons.check, color: Colors.blue)
-                                : null,
-                            onTap: () {
-                              EventBus().emit('audio_track_changed', track);
+                        title: Text(track.language ?? 'NULL'),
+                        trailing:
+                        selectedAudioTrack == (track.language ?? 'NULL')
+                            ? Icon(Icons.check, color: Colors.blue)
+                            : null,
+                        onTap: () {
+                          EventBus().emit('audio_track_changed', track);
 
-                              if (mounted) {
-                                setState(() {
-                                  selectedAudioTrack = track.language ?? 'NULL';
-                                });
-                              }
-                              Navigator.pop(context);
-                            },
-                          ),
-                        )
+                          if (mounted) {
+                            setState(() {
+                              selectedAudioTrack = track.language ?? 'NULL';
+                            });
+                          }
+                          Navigator.pop(context);
+                        },
+                      ),
+                    )
                         .toList(),
                   ),
                 ),
@@ -347,25 +382,25 @@ class _VideoSettingsWidgetState extends State<VideoSettingsWidget> {
                     children: subtitleTracks
                         .map(
                           (track) => ListTile(
-                            title: Text(track.language ?? 'NULL'),
-                            trailing:
-                                selectedSubtitleTrack ==
-                                    (track.language ?? 'NULL')
-                                ? Icon(Icons.check, color: Colors.blue)
-                                : null,
-                            onTap: () {
-                              EventBus().emit('subtitle_track_changed', track);
+                        title: Text(track.language ?? 'NULL'),
+                        trailing:
+                        selectedSubtitleTrack ==
+                            (track.language ?? 'NULL')
+                            ? Icon(Icons.check, color: Colors.blue)
+                            : null,
+                        onTap: () {
+                          EventBus().emit('subtitle_track_changed', track);
 
-                              if (mounted) {
-                                setState(() {
-                                  selectedSubtitleTrack =
-                                      track.language ?? 'NULL';
-                                });
-                              }
-                              Navigator.pop(context);
-                            },
-                          ),
-                        )
+                          if (mounted) {
+                            setState(() {
+                              selectedSubtitleTrack =
+                                  track.language ?? 'NULL';
+                            });
+                          }
+                          Navigator.pop(context);
+                        },
+                      ),
+                    )
                         .toList(),
                   ),
                 ),
