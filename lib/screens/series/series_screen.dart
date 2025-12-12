@@ -426,7 +426,7 @@ class _SeriesScreenState extends State<SeriesScreen> {
                 style: TextStyle(
                   color: contentColor,
                   fontSize: 15,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w700,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
